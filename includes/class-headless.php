@@ -76,6 +76,7 @@ class Headless {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->define_redirect_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -112,6 +113,11 @@ class Headless {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-i18n.php';
 
 		/**
+		 * The class responsible for redirecting stuff and rewriting permalinks to the front end
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-redirects.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-headless-admin.php';
@@ -140,6 +146,23 @@ class Headless {
 		$plugin_i18n = new Headless_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+
+	}
+
+	/**
+	 * Register all of the hooks related to redirects
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_redirect_hooks() {
+
+		$redirects = new Headless_Redirects( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_filter( 'post_link', $redirects, 'change_permalink');
+		$this->loader->add_filter( 'post_type_link', $redirects, 'change_permalink');
+		$this->loader->add_filter( 'page_link', $redirects, 'change_permalink');
+		$this->loader->add_filter( 'author_link', $redirects, 'change_permalink');
 
 	}
 

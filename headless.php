@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Headless
  * Plugin URI:        https://alephsf.com
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       This plugin allows WordPress to serve as a headless API, essentially removing the theme system.
  * Version:           1.0.0
  * Author:            Matt Glaser
  * Author URI:        https://alephsf.com
@@ -74,9 +74,18 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-headless.php';
  * @since    1.0.0
  */
 function run_headless() {
-
-	$plugin = new Headless();
-	$plugin->run();
-
+	if( defined('HEADLESS_FRONTEND_URL') ){
+		$plugin = new Headless();
+		$plugin->run();
+	} else {
+		add_action('admin_notices', 'headless_no_frontend_url_constant');
+	}
 }
 run_headless();
+
+function headless_no_frontend_url_constant() {
+  printf(
+    '<div class="error"><p>%s</p></div>',
+    __('Headless could not be instantiated because the HEADLESS_FRONTEND_URL constant is not set.')
+  );
+}
