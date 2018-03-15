@@ -49,4 +49,34 @@ class Headless_Redirects {
 	     return $permalink;
 	 }
 
+
+	 /**
+ 	 * Check if request should be redirected
+ 	 *
+ 	 * @since    1.0.0
+	 *
+ 	 */
+	 public function redirect_check () {
+		if( is_page('headless-post-preview') ){
+			return;
+		}
+ 		if( is_single() || is_front_page() || is_page() || is_tax() || is_tag() || is_category() || is_author() || is_date() ){ // date archives
+ 			$this->redirect_to_frontend();
+ 		}
+ 	}
+
+
+	/**
+	* Redirect request to same path on front end domain
+	*
+	* @since    1.0.0
+	*
+	*/
+	protected function redirect_to_frontend(){
+		$old_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$new_link = $this->change_permalink( $old_link );
+		exit( wp_redirect( $new_link ) );
+	}
+
+
 }

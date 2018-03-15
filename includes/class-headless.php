@@ -164,6 +164,8 @@ class Headless {
 		$this->loader->add_filter( 'page_link', $redirects, 'change_permalink');
 		$this->loader->add_filter( 'author_link', $redirects, 'change_permalink');
 
+		$this->loader->add_action('template_redirect', $redirects, 'redirect_check');
+
 	}
 
 	/**
