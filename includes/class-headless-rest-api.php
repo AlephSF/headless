@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The admin-specific functionality of the plugin.
+ * Extends the WordPress REST API with helpful features
  *
  * @link       https://alephsf.com
  * @since      1.0.0
@@ -11,10 +11,8 @@
  */
 
 /**
- * The admin-specific functionality of the plugin.
+ * Extends the WordPress REST API with helpful features
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @package    Headless
  * @subpackage Headless/admin
@@ -23,81 +21,67 @@
 class Headless_Rest_Api {
 
 	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
-
-	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
-
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-
+	public function __construct() {
+		$this->yoast = null;
 	}
 
-	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
+	public function add_seo_data() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Headless_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Headless_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+      register_rest_field(
+          array(
+						'post',
+						'page'
+					),
+          'seoData',
+          array(
+              'get_callback' => array( $this, 'get_seo_data' )
+          )
+      );
+  }
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/headless-admin.css', array(), $this->version, 'all' );
+	public function get_seo_data( $object, $field_name, $request ){
 
+		if( class_exists('WPSEO_Frontend') ){
+			$this->yoast = WPSEO_Frontend::get_instance();
+		}
+
+		$post = get_post( $object['id'] );
+		$meta = get_post_meta( $object['id'] );
+		$description = $this->get_seo_description( $post, $meta);
+		$yoast_social = get_option('wpseo_social');
+		return array(
+			'title' => $this->get_seo_title( $post, $meta ),
+			'description' => $description,
+			'twitterHandle' => is_array($yoast_social) ? $yoast_social['twitter_site'] : null,
+			'siteName' => get_bloginfo('name'),
+			'fbAdmins' => is_array($yoast_social) ? $yoast_social['fb_admins'] : null,
+			'fbAppId' => is_array($yoast_social) ? $yoast_social['fbadminapp'] : null
+		);
 	}
 
-	/**
-	 * Register the JavaScript for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Headless_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Headless_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/headless-admin.js', array( 'jquery' ), $this->version, false );
-
+	public function get_seo_title( $post, $meta ){
+		if( $this->yoast ){
+			$title = $this->yoast->get_content_title($post);
+		} else {
+			$title = get_the_title( $post ) . ' - ' . get_bloginfo('name');
+		}
+		return $title;
 	}
+
+
+	public function get_seo_description( $post, $meta ){
+		if( is_array($meta) && key_exists('_yoast_wpseo_metadesc', $meta) ){
+			$desc = $meta['_yoast_wpseo_metadesc'][0];
+		} else {
+			$array = preg_split('/(^.*\w+.*[\.\?!][\s])/', $post->post_content, -1, PREG_SPLIT_DELIM_CAPTURE);
+			return trim($array[0] . $array[1]);
+		}
+		return $desc;
+	}
+
 
 }
