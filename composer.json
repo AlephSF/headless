@@ -1,0 +1,13 @@
+{
+    "name": "alephsf/headless",
+    "description": "A WordPress plugin allowing you to run WordPress as a headless API.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Matt Glaser",
+            "email": "matt@alephsf.com"
+        }
+    ],
+    "require": {}
+}
