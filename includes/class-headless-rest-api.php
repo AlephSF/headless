@@ -77,8 +77,13 @@ class Headless_Rest_Api {
 		if( is_array($meta) && key_exists('_yoast_wpseo_metadesc', $meta) ){
 			$desc = $meta['_yoast_wpseo_metadesc'][0];
 		} else {
-			$array = preg_split('/(^.*\w+.*[\.\?!][\s])/', $post->post_content, -1, PREG_SPLIT_DELIM_CAPTURE);
-			return trim($array[0] . $array[1]);
+			$output = strip_shortcodes($post->post_content);
+			$output = str_replace(["\r\n", "\r", "\n"], ' ', $output);
+			$output = strip_tags($output);
+			$result = array();
+			$end = '.?!';
+			preg_match("/^[^{$end}]+[{$end}]/", $output, $result);
+			$desc = $result[0];
 		}
 		return $desc;
 	}
