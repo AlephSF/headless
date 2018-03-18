@@ -26,11 +26,36 @@ class Headless_Shortcodes {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct() {
 
 	}
 
+	/**
+	 * Whitelist specific shortcodes
+	 *
+	 * @since    1.0.0
+	 *
+	 */
+	function whitelist_shortcodes( $content) {
+		if( ! defined('HEADLESS_SHORTCODE_WHITELIST') ){
+			return $content;
+		}
+
+	  global $shortcode_tags;
+	  // Store original copy of registered tags.
+	  $_shortcode_tags = $shortcode_tags;
+	  // Remove any tags not in whitelist.
+	  foreach ( $shortcode_tags as $tag => $function ) {
+	    if (!in_array($tag, HEADLESS_SHORTCODE_WHITELIST)) {
+	      unset( $shortcode_tags[ $tag ] );
+	    }
+	  }
+	  // Apply shortcode.
+	  $content = shortcode_unautop( $content );
+	  // $response->data['content']['rendered'] = post_password_required( $post ) ? '' : apply_filters( 'the_content', $text );
+	  // Restore tags.
+	  $shortcode_tags = $_shortcode_tags;
+	  return $content;
+	}
 }

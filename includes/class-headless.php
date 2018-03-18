@@ -78,6 +78,7 @@ class Headless {
 		$this->set_locale();
 		$this->define_redirect_hooks();
 		$this->define_api_hooks();
+		$this->define_shortcode_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -122,6 +123,11 @@ class Headless {
 		 * The class responsible for extending and modifying REST API responses
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-rest-api.php';
+
+		/**
+		 * The class responsible for handling shortcodes
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-shortcodes.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
@@ -181,12 +187,24 @@ class Headless {
 	 * @access   private
 	 */
 	private function define_api_hooks() {
-		
+
 		$rest_api = new Headless_Rest_Api();
 		$this->loader->add_action( 'rest_api_init', $rest_api, 'add_seo_data', 90);
 
 	}
 
+	/**
+	 * Register all of the hooks related to redirects
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_shortcode_hooks() {
+		remove_filter('the_content', 'wptexturize');
+		$shortcodes = new Headless_Shortcodes();
+		$this->loader->add_filter( 'the_content', $shortcodes, 'whitelist_shortcodes' );
+
+	}
 
 	/**
 	 * Register all of the hooks related to the admin area functionality

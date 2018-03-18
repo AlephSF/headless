@@ -83,7 +83,11 @@ class Headless_Rest_Api {
 			$result = array();
 			$end = '.?!';
 			preg_match("/^[^{$end}]+[{$end}]/", $output, $result);
-			$desc = $result[0];
+			if( !$result ){
+				$desc = null;
+			} else {
+				$desc = $result[0];
+			}
 		}
 		return $desc;
 	}
