@@ -41,7 +41,6 @@ class Headless_Shortcodes {
 		if( ! defined('HEADLESS_SHORTCODE_WHITELIST') ){
 			return $content;
 		}
-	  $text = $post->post_content;
 
 	  global $shortcode_tags;
 	  // Store original copy of registered tags.
@@ -53,7 +52,7 @@ class Headless_Shortcodes {
 	    }
 	  }
 	  // Apply shortcode.
-	  $text = shortcode_unautop( $text );
+	  $content = shortcode_unautop( $content );
 
 	  // Restore tags.
 	  $shortcode_tags = $_shortcode_tags;
