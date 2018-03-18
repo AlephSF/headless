@@ -41,6 +41,7 @@ class Headless_Shortcodes {
 		if( ! defined('HEADLESS_SHORTCODE_WHITELIST') ){
 			return $content;
 		}
+	  $text = $post->post_content;
 
 	  global $shortcode_tags;
 	  // Store original copy of registered tags.
@@ -52,8 +53,8 @@ class Headless_Shortcodes {
 	    }
 	  }
 	  // Apply shortcode.
-	  $content = shortcode_unautop( $content );
-	  // $response->data['content']['rendered'] = post_password_required( $post ) ? '' : apply_filters( 'the_content', $text );
+	  $text = shortcode_unautop( $text );
+
 	  // Restore tags.
 	  $shortcode_tags = $_shortcode_tags;
 	  return $content;
