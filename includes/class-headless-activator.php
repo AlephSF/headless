@@ -30,7 +30,18 @@ class Headless_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
+		if( get_page_by_path('headless-post-preview') ){
+      return;
+    }
+    // Gather post data.
+    $preview_page = array(
+        'post_title'    => 'Headless Post Preview',
+        'post_name' => 'headless-post-preview',
+        'post_type'  => 'page',
+        'post_status'   => 'draft'
+    );
+    // Insert the post into the database.
+    wp_insert_post( $preview_page );
 	}
 
 }

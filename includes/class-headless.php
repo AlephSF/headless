@@ -79,8 +79,9 @@ class Headless {
 		$this->define_redirect_hooks();
 		$this->define_api_hooks();
 		$this->define_shortcode_hooks();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
+		$this->define_post_preview_hooks();
+		// $this->define_admin_hooks();
+		// $this->define_public_hooks();
 
 	}
 
@@ -130,15 +131,20 @@ class Headless {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-shortcodes.php';
 
 		/**
+		 * The class responsible for handling post previews
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-post-previews.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-headless-admin.php';
+		// require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-headless-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-headless-public.php';
+		// require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-headless-public.php';
 
 		$this->loader = new Headless_Loader();
 
@@ -205,6 +211,23 @@ class Headless {
 		$this->loader->add_filter( 'the_content', $shortcodes, 'whitelist_shortcodes' );
 
 	}
+
+	/**
+	 * Register all of the hooks related to redirects
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_post_preview_hooks() {
+
+		$post_preview = new Headless_Post_Previews();
+		$this->loader->add_filter( 'preview_post_link', $post_preview, 'frontend_preview_link', 10, 2 );
+		$this->loader->add_filter( 'preview_page_link', $post_preview, 'frontend_preview_link', 10, 2 );
+		$this->loader->add_filter( 'page_template', $post_preview, 'preview_page_template', 10, 1 );
+		$this->loader->add_filter( 'rest_prepare_revision', $post_preview, 'add_acf_to_revision', 10, 2 );
+
+	}
+
 
 	/**
 	 * Register all of the hooks related to the admin area functionality

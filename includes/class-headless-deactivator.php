@@ -30,7 +30,12 @@ class Headless_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		$page = get_page_by_path('headless-post-preview');
+	  if( $page ){
+	    wp_delete_post( $page->ID, true );
+	  } else {
+	    return;
+	  }
 	}
 
 }
