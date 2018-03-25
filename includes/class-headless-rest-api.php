@@ -58,8 +58,8 @@ class Headless_Rest_Api {
 			'description' => $description,
 			'twitterHandle' => is_array($yoast_social) ? $yoast_social['twitter_site'] : null,
 			'siteName' => get_bloginfo('name'),
-			'fbAdmins' => is_array($yoast_social) ? $yoast_social['fb_admins'] : null,
-			'fbAppId' => is_array($yoast_social) ? $yoast_social['fbadminapp'] : null
+			'fbAdmins' => is_array($yoast_social) && array_key_exists('fb_admins', $yoast_social) ? $yoast_social['fb_admins'] : null,
+			'fbAppId' => is_array($yoast_social) && array_key_exists('fbadminapp', $yoast_social) ? $yoast_social['fbadminapp'] : null
 		);
 	}
 

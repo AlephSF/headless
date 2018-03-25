@@ -7,7 +7,7 @@
  * public-facing side of the site and the admin area.
  *
  * @link       https://alephsf.com
- * @since      1.0.0
+ * @since      1.0.3
  *
  * @package    Headless
  * @subpackage Headless/includes
@@ -70,7 +70,7 @@ class Headless {
 		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
 			$this->version = PLUGIN_NAME_VERSION;
 		} else {
-			$this->version = '1.0.2';
+			$this->version = '1.0.3';
 		}
 		$this->plugin_name = 'headless';
 
