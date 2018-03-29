@@ -5,10 +5,12 @@
  $nonce = wp_create_nonce( 'wp_rest' );
  $base_rest_url = home_url('/') . 'wp-json/wp/v2/';
  $rev_url = $base_rest_url . $_GET['ptype'] . 's/' . $_GET['post_id'] . "/revisions/" . $_GET['preview_id'];
- $thumb_url = $base_rest_url . 'media/' . $_GET['_thumbnail_id'];
+ $thumb_url = $_GET['_thumbnail_id'] !== '-1' ? $base_rest_url . 'media/' . $_GET['_thumbnail_id'] : 'false';
+
  if(defined('HEADLESS_POST_PREVIEW_DEST')){
 	 echo '<h2>Building preview data, please be patient...</h2>';
-	 $preview_url = HEADLESS_POST_PREVIEW_DEST;
+   $path = parse_url(get_permalink($_GET['post_id']), PHP_URL_PATH);
+	 $preview_url = HEADLESS_POST_PREVIEW_DEST . $path;
  } else {
 	 echo '<h2>You must set the constant HEADLESS_POST_PREVIEW_DEST to use this feature!</h2>';
 	 wp_die();
@@ -49,15 +51,20 @@
 					postData._embedded = {
 						'author': response
 					};
-					$.ajax( {
-					url: '<?php echo $thumb_url; ?>',
-					method: 'GET'
-					} ).done( function ( response ) {
-						postData._embedded['wp:featuredmedia'] = response;
-						console.log(postData);
-						redirectPost('<?php echo $preview_url ?>', postData);
-					});
-				});
+          if( '<?php echo $thumb_url; ?>' !== 'false' ) {
+  					$.ajax( {
+  					url: '<?php echo $thumb_url; ?>',
+  					method: 'GET'
+  					} ).done( function ( response ) {
+  						postData._embedded['wp:featuredmedia'] = response;
+  						console.log(postData);
+  						redirectPost('<?php echo $preview_url ?>', postData);
+  					});
+          } else {
+            console.log(postData);
+            redirectPost('<?php echo $preview_url ?>', postData);
+          }
+  			});
 			});
 	});
 </script>
