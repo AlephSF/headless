@@ -49,14 +49,14 @@
 					method: 'GET'
 				} ).done( function ( response ) {
 					postData._embedded = {
-						'author': array(response)
+						'author': [response]
 					};
           if( '<?php echo $thumb_url; ?>' !== 'false' ) {
   					$.ajax( {
   					url: '<?php echo $thumb_url; ?>',
   					method: 'GET'
   					} ).done( function ( response ) {
-  						postData._embedded['wp:featuredmedia'] = array(response);
+  						postData._embedded['wp:featuredmedia'] = [response];
   						console.log(postData);
   						redirectPost('<?php echo $preview_url ?>', postData);
   					});
