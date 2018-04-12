@@ -79,15 +79,7 @@ class Headless_Rest_Api {
 		} else {
 			$output = strip_shortcodes($post->post_content);
 			$output = str_replace(["\r\n", "\r", "\n"], ' ', $output);
-			$output = strip_tags($output);
-			$result = array();
-			$end = '.?!';
-			preg_match("/^[^{$end}]+[{$end}]/", $output, $result);
-			if( !$result ){
-				$desc = null;
-			} else {
-				$desc = $result[0];
-			}
+			$desc = strip_tags($output);
 		}
 		return $desc;
 	}
