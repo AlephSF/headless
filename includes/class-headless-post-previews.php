@@ -37,7 +37,9 @@ class Headless_Post_Previews {
 	  }
 	  $query_params = parse_url($preview_link, PHP_URL_QUERY);
 	  $query_arr = $this->parse_query($query_params);
-	  return home_url('/') . 'headless-post-preview?ptype=' . $post->post_type . '&preview_id=' . $preview_id . '&_thumbnail_id=' . $query_arr['_thumbnail_id'] . '&pformat=' . $query_arr['post_format'] . '&post_id=' . $post->ID;
+		$thumbnail_arg = array_key_exists('_thumbnail_id', $query_arr) ? $query_arr['_thumbnail_id'] : '-1';
+		$pformat_arg = array_key_exists('pformat', $query_arr) ? $query_arr['pformat'] : '';
+	  return home_url('/') . 'headless-post-preview?ptype=' . $post->post_type . '&preview_id=' . $preview_id . '&_thumbnail_id=' . $thumbnail_arg . '&pformat=' . $pformat_arg . '&post_id=' . $post->ID;
 	}
 
 	public function parse_query($var) {
