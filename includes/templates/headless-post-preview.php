@@ -45,7 +45,8 @@
 		} ).done( function ( response ) {
 				postData = response;
         postData.previewType = '<?php echo $_GET['ptype']; ?>';
-        previewUrl = previewUrl + '/' + postData.slug;
+        var typePath = postData.previewType === 'page' ? '' : postData.previewType + 's/';
+        previewUrl = previewUrl + '/' + typePath + postData.slug;
 				$.ajax( {
 					url: '<?php echo $base_rest_url; ?>users/' + postData.author,
 					method: 'GET'
