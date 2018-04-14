@@ -9,8 +9,8 @@
  //
  if(defined('HEADLESS_POST_PREVIEW_DEST')){
 	 echo '<h2>Building preview data, please be patient...</h2>';
-   $path = parse_url(get_permalink($_GET['post_id']), PHP_URL_PATH);
-	 $preview_url = HEADLESS_POST_PREVIEW_DEST . $path;
+   // $path = parse_url(get_permalink($_GET['post_id']), PHP_URL_PATH);
+	 // $preview_url = HEADLESS_POST_PREVIEW_DEST . $path;
  } else {
 	 echo '<h2>You must set the constant HEADLESS_POST_PREVIEW_DEST to use this feature!</h2>';
 	 wp_die();
@@ -30,12 +30,12 @@
 			input.type = 'hidden';
 			input.name = 'postdata';
 			input.value = JSON.stringify(data);
-      console.log(data);
 			form.appendChild(input);
 	    form.submit();
 	}
 	$(function(){
-		var postData = {};
+		var postData = {},
+      previewUrl = '<?php echo HEADLESS_POST_PREVIEW_DEST; ?>';
 		$.ajax( {
 	    url: '<?php echo $rev_url; ?>',
 	    method: 'GET',
@@ -44,6 +44,7 @@
 	    }
 		} ).done( function ( response ) {
 				postData = response;
+        previewUrl = previewUrl + '/' + postData.slug;
 				$.ajax( {
 					url: '<?php echo $base_rest_url; ?>users/' + postData.author,
 					method: 'GET'
@@ -57,10 +58,10 @@
   					method: 'GET'
   					} ).done( function ( response ) {
   						postData._embedded['wp:featuredmedia'] = [response];
-  						redirectPost('<?php echo $preview_url ?>', postData);
+  						redirectPost(previewUrl, postData);
   					});
           } else {
-            redirectPost('<?php echo $preview_url ?>', postData);
+            redirectPost(previewUrl, postData);
           }
   			});
 			});
