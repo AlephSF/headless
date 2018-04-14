@@ -44,6 +44,7 @@
 	    }
 		} ).done( function ( response ) {
 				postData = response;
+        postData.previewType = '<?php echo $_GET['ptype']; ?>';
         previewUrl = previewUrl + '/' + postData.slug;
 				$.ajax( {
 					url: '<?php echo $base_rest_url; ?>users/' + postData.author,
