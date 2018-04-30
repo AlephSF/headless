@@ -43,6 +43,10 @@ class Headless_Rest_Api {
       );
   }
 
+	public function remove_more_excerpt($more) {
+		return '';
+  }
+
 	public function get_seo_data( $object, $field_name, $request ){
 
 		if( class_exists('WPSEO_Frontend') ){
@@ -77,9 +81,9 @@ class Headless_Rest_Api {
 		if( is_array($meta) && key_exists('_yoast_wpseo_metadesc', $meta) ){
 			$desc = $meta['_yoast_wpseo_metadesc'][0];
 		} else {
-			$output = strip_shortcodes($post->post_content);
-			$output = str_replace(["\r\n", "\r", "\n"], ' ', $output);
-			$desc = strip_tags($output);
+			add_filter( 'excerpt_more', array($this, 'remove_more_excerpt'));
+			$desc = get_the_excerpt($post->ID);
+			remove_filter( 'excerpt_more', array($this, 'remove_more_excerpt'));
 		}
 		return $desc;
 	}
