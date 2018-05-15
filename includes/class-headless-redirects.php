@@ -42,7 +42,7 @@ class Headless_Redirects {
 	 */
 
 	 public function change_permalink( $permalink ){
-	     if( defined('HEADLESS_FRONTEND_URL') ) {
+	     if( defined('HEADLESS_FRONTEND_URL') && is_admin() ) {
 	       $url = parse_url($permalink);
 	       $permalink = HEADLESS_FRONTEND_URL . $url['path'];
 	     }
@@ -77,6 +77,22 @@ class Headless_Redirects {
 		$new_link = $this->change_permalink( $old_link );
 		exit( wp_redirect( $new_link ) );
 	}
+
+
+	public function change_yoast_sitemap_url( $output, $url ) {
+		if( defined('HEADLESS_FRONTEND_URL') ) {
+			$output = str_replace(get_bloginfo('url'), HEADLESS_FRONTEND_URL, $output);
+		}
+		return $output;
+	}
+
+	public function change_sitemap_index_url( $config_wp_home ) {
+		if( defined('HEADLESS_FRONTEND_URL') && !is_admin() && strpos( $_SERVER['REQUEST_URI'], 'sitemap' ) ) {
+	    $config_wp_home = HEADLESS_FRONTEND_URL . '/sitemaps';
+		}
+		return $config_wp_home;
+	}
+
 
 
 }
