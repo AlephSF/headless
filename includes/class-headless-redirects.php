@@ -42,7 +42,7 @@ class Headless_Redirects {
 	 */
 
 	 public function change_permalink( $permalink ){
-	     if( defined('HEADLESS_FRONTEND_URL') && is_admin() ) {
+	     if( defined('HEADLESS_FRONTEND_URL') ) {
 	       $url = parse_url($permalink);
 	       $permalink = HEADLESS_FRONTEND_URL . $url['path'];
 	     }
