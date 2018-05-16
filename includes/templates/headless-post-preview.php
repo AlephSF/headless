@@ -6,11 +6,10 @@
  $base_rest_url = home_url('/') . 'wp-json/wp/v2/';
  $rev_url = $base_rest_url . $_GET['ptype'] . 's/' . $_GET['post_id'] . "/revisions/" . $_GET['preview_id'];
  $thumb_url = (int) $_GET['_thumbnail_id'] > 0 ? $base_rest_url . 'media/' . $_GET['_thumbnail_id'] : 'false';
- //
+ $is_home = array_key_exists('home', $_GET) && $_GET['home'] ? 'true' : 'false';
+
  if(defined('HEADLESS_POST_PREVIEW_DEST')){
 	 echo '<h2>Building preview data, please be patient...</h2>';
-   // $path = parse_url(get_permalink($_GET['post_id']), PHP_URL_PATH);
-	 // $preview_url = HEADLESS_POST_PREVIEW_DEST . $path;
  } else {
 	 echo '<h2>You must set the constant HEADLESS_POST_PREVIEW_DEST to use this feature!</h2>';
 	 wp_die();
@@ -44,9 +43,10 @@
 	    }
 		} ).done( function ( response ) {
 				postData = response;
+        postData.isHome = <?php echo $is_home; ?>;
         postData.previewType = '<?php echo $_GET['ptype']; ?>';
         var typePath = postData.previewType === 'page' ? '' : postData.previewType + 's/';
-        previewUrl = previewUrl + '/' + typePath + postData.slug;
+        previewUrl = postData.isHome ? previewUrl : previewUrl + '/' + typePath + postData.slug;
 				$.ajax( {
 					url: '<?php echo $base_rest_url; ?>users/' + postData.author,
 					method: 'GET'

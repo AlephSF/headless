@@ -16,7 +16,7 @@
  * Plugin Name:       Headless
  * Plugin URI:        https://alephsf.com
  * Description:       This plugin allows WordPress to serve as a headless API, essentially removing the theme system.
- * Version:           1.1.1
+ * Version:           1.1.2
  * Author:            Matt Glaser
  * Author URI:        https://alephsf.com
  * License:           GPL-2.0+

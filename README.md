@@ -22,7 +22,7 @@ plugins, is to add this to your `composer.json`'s `respositories` block:
   "type": "package",
   "package": {
     "name": "alephsf/headless",
-    "version": "1.0.1",
+    "version": "1.1.2",
     "type": "wordpress-plugin",
     "source": {
       "url": "https://github.com/AlephSF/headless",

@@ -37,9 +37,11 @@ class Headless_Post_Previews {
 	  }
 	  $query_params = parse_url($preview_link, PHP_URL_QUERY);
 	  $query_arr = $this->parse_query($query_params);
+		$frontpage_id = get_option( 'page_on_front' );
+		$homepage_arg = (int) $frontpage_id === (int) $post->ID ? '&home=true' : '';
 		$thumbnail_arg = array_key_exists('_thumbnail_id', $query_arr) ? $query_arr['_thumbnail_id'] : '-1';
 		$pformat_arg = array_key_exists('pformat', $query_arr) ? $query_arr['pformat'] : '';
-	  return home_url('/') . 'headless-post-preview?ptype=' . $post->post_type . '&preview_id=' . $preview_id . '&_thumbnail_id=' . $thumbnail_arg . '&pformat=' . $pformat_arg . '&post_id=' . $post->ID;
+	  return home_url('/') . 'headless-post-preview?ptype=' . $post->post_type . '&preview_id=' . $preview_id . '&_thumbnail_id=' . $thumbnail_arg . '&pformat=' . $pformat_arg . '&post_id=' . $post->ID . $homepage_arg;
 	}
 
 	public function parse_query($var) {
@@ -62,6 +64,24 @@ class Headless_Post_Previews {
 	  $data = $response->get_data();
 
 	  $data['acf'] = get_fields( $post->ID );
+
+		// now add acf for any relationship fields
+		foreach ($data['acf'] as $acf_key => $acf_val) {
+			if( is_array($acf_val) ){
+				foreach ($acf_val as $key => $item) {
+					// check if it has an ID
+					if( ! is_object($item) || ! $item->ID ){
+						continue;
+					} else {
+						// check if it has ACF fields
+						$sub_acf = get_fields( $item->ID );
+						if( $sub_acf ) {
+							$data['acf'][$acf_key][$key]->acf = $sub_acf;
+						}
+					}
+				}
+			}
+		}
 
 	  return rest_ensure_response( $data );
 	}
