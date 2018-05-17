@@ -76,6 +76,7 @@ class Headless {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->define_cache_hooks();
 		$this->define_redirect_hooks();
 		$this->define_api_hooks();
 		$this->define_shortcode_hooks();
@@ -114,6 +115,11 @@ class Headless {
 		 * of the plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-i18n.php';
+
+		/**
+		 * The class responsible for managing the front-end and API cache
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-cache.php';
 
 		/**
 		 * The class responsible for redirecting stuff and rewriting permalinks to the front end
@@ -165,6 +171,18 @@ class Headless {
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain', 20 );
 
+	}
+
+	/**
+	 * Register all of the hooks related to redirects
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_cache_hooks() {
+
+		$cache = new Headless_Cache();
+		$this->loader->add_action( 'save_post', $cache, 'clear_on_save' );
 	}
 
 	/**
