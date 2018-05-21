@@ -94,7 +94,9 @@ class Headless_Redirects {
 	}
 
 	function set_logged_in_cookie() {
-			setcookie('headless_logged_in', true, time()+60*60*24*14, '/', $_SERVER['HTTP_HOST'], 1);
+		$host_names = explode(".", $_SERVER['HTTP_HOST']);
+		$root_host_name = $host_names[count($host_names)-2] . "." . $host_names[count($host_names)-1];
+		setcookie('headless_logged_in', true, time()+60*60*24*14, '/', $root_host_name, 1);
 	}
 
 
