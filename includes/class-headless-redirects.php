@@ -93,6 +93,10 @@ class Headless_Redirects {
 		return $config_wp_home;
 	}
 
+	function set_logged_in_cookie() {
+			setcookie('headless_logged_in', true, time()+60*60*24*14, '/', $_SERVER['HTTP_HOST'], 1);
+	}
+
 
 
 }
