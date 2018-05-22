@@ -70,7 +70,7 @@ class Headless {
 		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
 			$this->version = PLUGIN_NAME_VERSION;
 		} else {
-			$this->version = '1.0.13';
+			$this->version = '1.2.3';
 		}
 		$this->plugin_name = 'headless';
 
@@ -183,6 +183,7 @@ class Headless {
 
 		$cache = new Headless_Cache();
 		$this->loader->add_action( 'save_post', $cache, 'clear_on_save' );
+		$this->loader->add_action( 'rest_api_init', $cache, 'purge_nginx_cache_path' );
 	}
 
 	/**
