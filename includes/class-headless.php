@@ -217,6 +217,7 @@ class Headless {
 
 		$rest_api = new Headless_Rest_Api();
 		$this->loader->add_action( 'rest_api_init', $rest_api, 'add_seo_data', 90);
+		$this->loader->add_filter( 'headless_seo_post_types', $rest_api, 'custom_seo_post_types');
 
 	}
 

@@ -27,20 +27,27 @@ class Headless_Rest_Api {
 	 */
 	public function __construct() {
 		$this->yoast = null;
+		$this->post_types = array(
+			'post',
+			'page'
+		);
 	}
 
 	public function add_seo_data() {
 
-      register_rest_field(
-          array(
-						'post',
-						'page'
-					),
-          'seoData',
-          array(
-              'get_callback' => array( $this, 'get_seo_data' )
-          )
-      );
+		if( has_filter('headless_seo_post_types') ) {
+			$post_types = apply_filters('headless_seo_post_types', $post_types);
+		} else {
+			$post_types = $this->post_types;
+		}
+
+    register_rest_field(
+        $post_types,
+        'seoData',
+        array(
+            'get_callback' => array( $this, 'get_seo_data' )
+        )
+    );
   }
 
 	public function remove_more_excerpt($more) {
@@ -88,5 +95,8 @@ class Headless_Rest_Api {
 		return $desc;
 	}
 
+	public function custom_seo_post_types( $custom_post_types ) {
+		return array_merge( $this->post_types, $custom_post_types );
+	}
 
 }
