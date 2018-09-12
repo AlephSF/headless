@@ -81,7 +81,6 @@ class Headless_Cache {
 	public function purge_nginx_cache_path(){
 		if( array_key_exists('HTTP_X_CACHE_BYPASS_PLEASE', $_SERVER) && $_SERVER['HTTP_X_CACHE_BYPASS_PLEASE'] ){
 			// Construct the NGINX fastcgi cache key
-			// httpGETucb-vision-wp.local/wp-json/wp/v2/pages/9
 			$cache_key = $_SERVER['REQUEST_SCHEME'] . $_SERVER['REQUEST_METHOD'] . $_SERVER['HTTP_X_FORWARDED_HOST'] . $_SERVER['REQUEST_URI'];
 			$hash = md5($cache_key);
 			$cache_path = '/nginx/cache/fcgi/' . $hash[-1] . '/' . $hash[-3] . $hash[-2] . '/' . $hash;

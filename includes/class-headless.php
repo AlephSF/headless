@@ -70,13 +70,13 @@ class Headless {
 		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
 			$this->version = PLUGIN_NAME_VERSION;
 		} else {
-			$this->version = '1.2.4';
+			$this->version = '1.3.0';
 		}
 		$this->plugin_name = 'headless';
 
 		$this->load_dependencies();
 		$this->set_locale();
-		$this->define_cache_hooks();
+		// $this->define_cache_hooks();
 		$this->define_redirect_hooks();
 		$this->define_api_hooks();
 		$this->define_shortcode_hooks();
@@ -119,7 +119,7 @@ class Headless {
 		/**
 		 * The class responsible for managing the front-end and API cache
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-cache.php';
+		// require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-cache.php';
 
 		/**
 		 * The class responsible for redirecting stuff and rewriting permalinks to the front end
@@ -179,12 +179,12 @@ class Headless {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_cache_hooks() {
-
-		$cache = new Headless_Cache();
-		$this->loader->add_action( 'save_post', $cache, 'clear_on_save' );
-		$this->loader->add_action( 'rest_api_init', $cache, 'purge_nginx_cache_path' );
-	}
+	// private function define_cache_hooks() {
+	//
+	// 	$cache = new Headless_Cache();
+	// 	$this->loader->add_action( 'save_post', $cache, 'clear_on_save' );
+	// 	$this->loader->add_action( 'rest_api_init', $cache, 'purge_nginx_cache_path' );
+	// }
 
 	/**
 	 * Register all of the hooks related to redirects
