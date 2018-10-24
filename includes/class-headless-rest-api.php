@@ -36,7 +36,7 @@ class Headless_Rest_Api {
 	public function add_seo_data() {
 
 		if( has_filter('headless_seo_post_types') ) {
-			$post_types = apply_filters('headless_seo_post_types', $post_types);
+			$post_types = apply_filters('headless_seo_post_types', $this->post_types);
 		} else {
 			$post_types = $this->post_types;
 		}
