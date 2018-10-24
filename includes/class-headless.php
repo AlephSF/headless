@@ -70,7 +70,7 @@ class Headless {
 		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
 			$this->version = PLUGIN_NAME_VERSION;
 		} else {
-			$this->version = '1.4.0';
+			$this->version = '1.4.2';
 		}
 		$this->plugin_name = 'headless';
 
