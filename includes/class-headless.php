@@ -70,17 +70,17 @@ class Headless {
 		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
 			$this->version = PLUGIN_NAME_VERSION;
 		} else {
-			$this->version = '1.3.0';
+			$this->version = '1.4.0';
 		}
 		$this->plugin_name = 'headless';
 
 		$this->load_dependencies();
 		$this->set_locale();
-		// $this->define_cache_hooks();
 		$this->define_redirect_hooks();
 		$this->define_api_hooks();
 		$this->define_shortcode_hooks();
 		$this->define_post_preview_hooks();
+		$this->define_gutenberg_hooks();
 		// $this->define_admin_hooks();
 		// $this->define_public_hooks();
 
@@ -117,11 +117,6 @@ class Headless {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-i18n.php';
 
 		/**
-		 * The class responsible for managing the front-end and API cache
-		 */
-		// require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-cache.php';
-
-		/**
 		 * The class responsible for redirecting stuff and rewriting permalinks to the front end
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-redirects.php';
@@ -140,6 +135,11 @@ class Headless {
 		 * The class responsible for handling post previews
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-post-previews.php';
+
+		/**
+		 * The class responsible for handling Gutenberg data
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-headless-gutenberg.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
@@ -173,18 +173,6 @@ class Headless {
 
 	}
 
-	/**
-	 * Register all of the hooks related to redirects
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	// private function define_cache_hooks() {
-	//
-	// 	$cache = new Headless_Cache();
-	// 	$this->loader->add_action( 'save_post', $cache, 'clear_on_save' );
-	// 	$this->loader->add_action( 'rest_api_init', $cache, 'purge_nginx_cache_path' );
-	// }
 
 	/**
 	 * Register all of the hooks related to redirects
@@ -208,7 +196,7 @@ class Headless {
 	}
 
 	/**
-	 * Register all of the hooks related to redirects
+	 * Register all of the hooks related to the JSON API
 	 *
 	 * @since    1.0.0
 	 * @access   private
@@ -218,7 +206,7 @@ class Headless {
 		$rest_api = new Headless_Rest_Api();
 		$this->loader->add_action( 'rest_api_init', $rest_api, 'add_seo_data', 90);
 		$this->loader->add_filter( 'headless_seo_post_types', $rest_api, 'custom_seo_post_types');
-
+		$this->loader->add_action( 'rest_api_init', $rest_api, 'add_block_data', 20);
 	}
 
 	/**
@@ -250,6 +238,18 @@ class Headless {
 
 	}
 
+	/**
+	 * Register all of the hooks related to Gutenberg
+	 *
+	 * @since    1.4.0
+	 * @access   private
+	 */
+	private function define_gutenberg_hooks() {
+
+		$gutes = new Headless_Gutenberg();
+		$this->loader->add_action('post_updated', $gutes, 'save_block_data', 10, 3);
+
+	}
 
 	/**
 	 * Register all of the hooks related to the admin area functionality
@@ -258,14 +258,14 @@ class Headless {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
-
-		$plugin_admin = new Headless_Admin( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
-	}
+	// private function define_admin_hooks() {
+	//
+	// 	$plugin_admin = new Headless_Admin( $this->get_plugin_name(), $this->get_version() );
+	//
+	// 	$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+	// 	$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+	//
+	// }
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality
@@ -274,14 +274,14 @@ class Headless {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
-
-		$plugin_public = new Headless_Public( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
-	}
+	// private function define_public_hooks() {
+	//
+	// 	$plugin_public = new Headless_Public( $this->get_plugin_name(), $this->get_version() );
+	//
+	// 	$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+	// 	$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+	//
+	// }
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.

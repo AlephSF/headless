@@ -99,4 +99,37 @@ class Headless_Rest_Api {
 		return array_merge( $this->post_types, $custom_post_types );
 	}
 
+	/**
+	 * Register field for block data
+	 *
+	 * @since    1.4.0
+	 */
+	 public function add_block_data() {
+
+       register_rest_field(
+           array(
+ 						'post',
+ 						'page'
+ 					),
+           'headlessBlocks',
+           array(
+               'get_callback' => array( $this, 'get_block_data' )
+           )
+       );
+   }
+
+	 /**
+ 	 * Get block data, if it exists
+ 	 *
+ 	 * @param object $post
+ 	 * @param array $meta
+ 	 * @return string $title
+ 	 * @since    1.4.0
+ 	 */
+ 	public function get_block_data( $post ){
+		$block_meta = get_post_meta($post['id'], '_headless_block_data');
+		$blocks =  $block_meta ? $block_meta : [];
+		return $blocks;
+ 	}
+
 }
