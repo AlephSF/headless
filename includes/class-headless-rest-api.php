@@ -127,7 +127,7 @@ class Headless_Rest_Api {
  	 * @since    1.4.0
  	 */
  	public function get_block_data( $post ){
-		$block_meta = get_post_meta($post['id'], '_headless_block_data');
+		$block_meta = get_post_meta($post['id'], '_headless_block_data', true);
 		$blocks =  $block_meta ? $block_meta : [];
 		return $blocks;
  	}
