@@ -40,8 +40,9 @@ class Headless_Gutenberg {
 	 * @since    1.4.0
 	 */
 	public function save_block_data($post_id, $post, $update){
-		if( function_exists( 'gutenberg_parse_blocks' ) ){
-			$block_data = $this->parse_blocks( $post->post_content );
+		// Support for legacy gutenberg_parse_blocks
+		if( function_exists( 'gutenberg_parse_blocks' ) || function_exists( 'parse_blocks' ) ){
+			$block_data = $this->parse_blocks_as_array( $post->post_content );
 			update_post_meta( $post_id, '_headless_block_data', $block_data );
 		}
 	}
@@ -53,9 +54,9 @@ class Headless_Gutenberg {
 	 * @return array $block_data
 	 * @since    1.4.0
 	 */
-	private function parse_blocks($raw_content){
+	private function parse_blocks_as_array($raw_content){
 		$block_data = [];
-		$raw_blocks = gutenberg_parse_blocks($raw_content);
+		$raw_blocks = function_exists( 'gutenberg_parse_blocks' ) ? gutenberg_parse_blocks($raw_content) : parse_blocks($raw_content);
 		foreach ($raw_blocks as $raw_block) {
 			if( array_key_exists('blockName', $raw_block) ){
 				array_push($block_data, $raw_block);

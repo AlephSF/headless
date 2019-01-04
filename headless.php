@@ -16,7 +16,7 @@
  * Plugin Name:       Headless
  * Plugin URI:        https://alephsf.com
  * Description:       This plugin allows WordPress to serve as a headless API, essentially removing the theme system.
- * Version:           1.4.3
+ * Version:           1.4.4
  * Author:            Matt Glaser
  * Author URI:        https://alephsf.com
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.4.3' );
+define( 'PLUGIN_NAME_VERSION', '1.4.4' );
 
 /**
  * The code that runs during plugin activation.
