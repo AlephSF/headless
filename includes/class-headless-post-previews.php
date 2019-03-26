@@ -62,27 +62,28 @@ class Headless_Post_Previews {
 
 	public function add_acf_to_revision( $response, $post ) {
 	  $data = $response->get_data();
-
-	  $data['acf'] = get_fields( $post->ID );
-
-		// now add acf for any relationship fields
-		foreach ($data['acf'] as $acf_key => $acf_val) {
-			if( is_array($acf_val) ){
-				foreach ($acf_val as $key => $item) {
-					// check if it has an ID
-					if( ! is_object($item) || ! $item->ID ){
-						continue;
-					} else {
-						// check if it has ACF fields
-						$sub_acf = get_fields( $item->ID );
-						if( $sub_acf ) {
-							$data['acf'][$acf_key][$key]->acf = $sub_acf;
+	  if(function_exists('get_fields')){
+	  	$data['acf'] = get_fields( $post->ID );
+		if(is_array($data['acf'])){
+			// now add acf for any relationship fields
+			foreach ($data['acf'] as $acf_key => $acf_val) {
+				if( is_array($acf_val) ){
+					foreach ($acf_val as $key => $item) {
+						// check if it has an ID
+						if( ! is_object($item) || ! $item->ID ){
+							continue;
+						} else {
+							// check if it has ACF fields
+							$sub_acf = get_fields( $item->ID );
+							if( $sub_acf ) {
+								$data['acf'][$acf_key][$key]->acf = $sub_acf;
+							}
 						}
 					}
 				}
 			}
 		}
-
+	  }
 	  return rest_ensure_response( $data );
 	}
 
