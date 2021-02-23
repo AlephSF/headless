@@ -190,8 +190,8 @@ class Headless {
 		$this->loader->add_filter( 'author_link', $redirects, 'change_permalink');
 		$this->loader->add_filter( 'option_home', $redirects, 'change_sitemap_index_url', 10, 1 );
 		$this->loader->add_filter( 'wpseo_sitemap_url', $redirects, 'change_yoast_sitemap_url', 10, 2 );
-		$this->loader->add_action('template_redirect', $redirects, 'redirect_check');
-		$this->loader->add_action('wp_login', $redirects, 'set_logged_in_cookie');
+		$this->loader->add_action( 'template_redirect', $redirects, 'redirect_check');
+		$this->loader->add_action( 'wp_login', $redirects, 'set_logged_in_cookie');
 
 	}
 

@@ -63,6 +63,11 @@ class Headless_Redirects {
  		if( is_single() || is_front_page() || is_page() || is_tax() || is_tag() || is_category() || is_author() || is_date() ){ // date archives
  			$this->redirect_to_frontend();
  		}
+		if(is_404()){
+			$old_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]"; // send to home page
+			$new_link = $this->change_permalink( $old_link );
+			exit( wp_redirect( $new_link ) );
+		}
  	}
 
 
